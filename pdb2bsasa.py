@@ -50,7 +50,10 @@ def main(pdb_path, pairwise_only, sep, header):
             chain_AB = atom_array[sel] 
             chain_AB_atom_sasa = struc.sasa(chain_AB)
             chain_AB_sasa = np.sum(chain_AB_atom_sasa)
-            bsasa = (chain_A_sasa + chain_B_sasa - chain_AB_sasa)
+            # Factor of 1 / 2
+            # Consider the 2d case of 2 unit squares binding
+            # on a single surface. Without the 1/2 we double count.
+            bsasa = 0.5 * (chain_A_sasa + chain_B_sasa - chain_AB_sasa)
             out = f"{pdb_path}{sep}{A}{sep}{B}{sep}{bsasa.item()}{sep}{chain_A_sasa.item()}{sep}{chain_B_sasa.item()}{sep}{chain_AB_sasa.item()}"
             print(out)
         
